@@ -54,7 +54,7 @@ REASON_TITLES = {
     Reason.BUDGET: "Исчерпан лимит бюджета",
 }
 
-#: какие кнопки показывать для каждой причины
+# какие кнопки показывать для каждой причины
 REASON_OPTIONS: dict[Reason, list[Decision]] = {
     Reason.CONFLICT: [Decision.APPROVE, Decision.REWORK, Decision.SKIP, Decision.ABORT],
     Reason.NOT_ACCEPTED: [Decision.APPROVE, Decision.REWORK, Decision.SKIP, Decision.ABORT],
@@ -112,7 +112,7 @@ class ApprovalGate:
         self._open: dict[int, ApprovalRequest] = {}
         self._aborted = False
 
-    # -- запрос --------------------------------------------------------------
+    # запрос
     async def ask(self, reason: Reason, question: str, *, details: str = "",
                   task_id: int | None = None, subtask_id: int | None = None,
                   agent_name: str = "", options: list[Decision] | None = None,
@@ -179,7 +179,7 @@ class ApprovalGate:
             self._aborted = True
         return answer
 
-    # -- ответ ---------------------------------------------------------------
+    # ответ
     def resolve(self, approval_id: int, decision: Decision | str,
                 comment: str = "") -> bool:
         """Отдаёт решение ожидающему коду. Вызывается из интерфейса."""
@@ -190,7 +190,7 @@ class ApprovalGate:
             try:
                 decision = Decision(decision)
             except ValueError:
-                # Неизвестное решение не превращаем молча в «Принять»:
+                # Неизвестное решение не превращаем молча в "Принять":
                 # это ровно та ошибка, ради которой человека и спрашивают.
                 return False
         request = self._open.get(approval_id)

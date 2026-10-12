@@ -27,14 +27,14 @@ class ToolContext:
     workspace_dir: Path
     agent_id: int | None = None
     subtask_id: int | None = None
-    #: дополнительные каталоги, явно разрешённые пользователем в настройках
+    # дополнительные каталоги, явно разрешённые пользователем в настройках
     extra_allowed_paths: list[Path] = field(default_factory=list)
-    #: параметры песочницы
+    # параметры песочницы
     sandbox_backend: str = "auto"
     sandbox_timeout_sec: int = 30
     sandbox_memory_mb: int = 512
     allow_network_in_sandbox: bool = False
-    #: настройки веб-поиска
+    # настройки веб-поиска
     search_backend: str = "duckduckgo"
     search_api_key: str = ""
     fetch_pages: bool = True
@@ -113,7 +113,7 @@ class ToolRegistry:
             return f"ОШИБКА ИНСТРУМЕНТА ({type(exc).__name__}): {exc}"
 
 
-#: групповые имена из шаблонов ролей и настроек воркспейса → реальные инструменты
+# групповые имена из шаблонов ролей и настроек воркспейса -> реальные инструменты
 TOOL_GROUPS: dict[str, list[str]] = {
     "files": ["read_file", "write_file", "list_dir"],
     "web_search": ["web_search", "fetch_url"],

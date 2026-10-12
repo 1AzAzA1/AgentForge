@@ -25,13 +25,13 @@ from storage.repositories import Repos
 
 log = logging.getLogger("aiorc.export")
 
-#: расширения, по которым распознаём «проект с кодом»
+# расширения, по которым распознаём "проект с кодом"
 CODE_SUFFIXES = {
     ".py", ".js", ".ts", ".tsx", ".jsx", ".java", ".kt", ".go", ".rs", ".rb",
     ".php", ".cs", ".cpp", ".c", ".h", ".hpp", ".swift", ".scala", ".sh",
     ".sql", ".html", ".css", ".scss", ".vue", ".yml", ".yaml", ".toml",
 }
-#: служебные каталоги, которые не попадают в экспорт
+# служебные каталоги, которые не попадают в экспорт
 SKIP_DIRS = {".sandbox", "__pycache__", ".git", "node_modules", ".venv"}
 
 FORMAT_TITLES = {
@@ -123,7 +123,7 @@ class ResultBundle:
         if anonymize:
             ordered = sorted(self.agent_names)
             if agent_id not in ordered:
-                # Удалённый агент не должен получить чужую метку «A».
+                # Удалённый агент не должен получить чужую метку "A".
                 return "Исполнитель ?"
             index = ordered.index(agent_id)
             suffix = chr(ord("A") + index) if index < 26 else str(index + 1)
@@ -189,11 +189,11 @@ def scan_files(root: Path, limit: int = 2000) -> list[Path]:
 # Автоопределение формата
 # ---------------------------------------------------------------------------
 
-#: слова, по которым задача похожа на «сделать документ»
+# слова, по которым задача похожа на "сделать документ"
 DOC_HINTS = ("документ", "отчёт", "отчет", "статья", "текст", "инструкция",
              "руководство", "план", "анализ", "обзор", "презентация",
              "report", "document", "article", "guide", "analysis")
-#: слова, по которым задача похожа на «написать код»
+# слова, по которым задача похожа на "написать код"
 CODE_HINTS = ("код", "программ", "скрипт", "приложение", "сервис", "api",
               "библиотек", "рефактор", "баг", "тест", "code", "script",
               "app", "service", "library", "refactor")
@@ -223,8 +223,8 @@ def detect_format(bundle: ResultBundle) -> tuple[str, str]:
         bundle.task.description if bundle.task else "",
     ])).lower()
 
-    # Совпадение с начала слова: иначе «api» находится в «capital», а «код»
-    # в «эпизоде», и задача про историю уходит в ZIP как «код».
+    # Совпадение с начала слова: иначе "api" находится в "capital", а "код"
+    # в "эпизоде", и задача про историю уходит в ZIP как "код".
     def mentions(words: tuple[str, ...]) -> bool:
         return any(re.search(rf"(?<!\w){re.escape(w)}", haystack) for w in words)
 
@@ -378,7 +378,7 @@ def _status_title(status: str) -> str:
 
 
 def _when(raw: str) -> str:
-    # В базе время в UTC; в документе - местное, как и «Сформировано».
+    # В базе время в UTC; в документе - местное, как и "Сформировано".
     return local_time(raw, "%d.%m.%Y %H:%M") if raw else ""
 
 

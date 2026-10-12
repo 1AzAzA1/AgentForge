@@ -156,7 +156,7 @@ def match_agent_by_role(repos: Repos, workspace_id: int, role: str | None) -> in
     wanted = str(role or "").strip().lower()
     if not wanted:
         return None
-    # Модель пишет роль как вздумается: «Analyst», « analyst».
+    # Модель пишет роль как вздумается: "Analyst", " analyst".
     for a in repos.agents.list(workspace_id):
         if a.enabled and not a.is_supervisor and (a.role or "").strip().lower() == wanted:
             return a.id

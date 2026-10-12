@@ -102,7 +102,7 @@ class Tour:
         self.window.setProperty("height", 940)
         self.backend = self.ui.backend
 
-    # -- утилиты --------------------------------------------------------------
+    # утилиты
     async def wait(self, seconds: float) -> None:
         await asyncio.sleep(seconds)
 
@@ -144,7 +144,7 @@ class Tour:
         shell.setProperty("page", page)
         assert shell.property("page") == page
 
-    # -- сценарий ------------------------------------------------------------------
+    # сценарий
     async def login(self) -> None:
         self.shot("00_signup")
         done: list[tuple[bool, str]] = []
@@ -272,7 +272,7 @@ def main(shots_dir: str) -> int:
         print("  ", e)
     tour.ui.dispose()
     # Закрытие цикла останавливает поток исполнителя qasync; без этого
-    # процесс падает при выходе с «QThread: Destroyed while thread is running».
+    # процесс падает при выходе с "QThread: Destroyed while thread is running".
     tour.loop.close()
     return 1 if errors else 0
 

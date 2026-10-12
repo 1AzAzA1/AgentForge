@@ -41,9 +41,9 @@ from storage.repositories import Repos
 
 log = logging.getLogger("aiorc.supervisor")
 
-#: сколько последних результатов подмешивать в контекст проверки
+# сколько последних результатов подмешивать в контекст проверки
 CONTEXT_REPORTS = 6
-#: предел длины одного отчёта в промпте супервайзера
+# предел длины одного отчёта в промпте супервайзера
 REPORT_CLIP = 6000
 
 
@@ -68,8 +68,8 @@ class Supervisor:
         self.bus = bus
         self.workspace_id = workspace_id
         self.settings = settings
-        #: лимиты прогона: проверки супервайзера - самая дорогая часть
-        #: системы, поэтому они обязаны проходить через тот же бюджет
+        # лимиты прогона: проверки супервайзера - самая дорогая часть
+        # системы, поэтому они обязаны проходить через тот же бюджет
         self.budget = budget
         self.on_usage = on_usage
         self.anonymize = bool(settings.get("anonymize_summaries", True))
@@ -78,10 +78,10 @@ class Supervisor:
         self._model: SupervisorModel | None = None
         self._summary_task: asyncio.Task | None = None
         self._stop = asyncio.Event()
-        #: текст последней ошибки сводки - чтобы интерфейс не выдавал её за
-        #: «нечего пересказывать»
+        # текст последней ошибки сводки - чтобы интерфейс не выдавал её за
+        # "нечего пересказывать"
         self.last_error = ""
-        #: задача текущего прогона - для привязки событий к нему
+        # задача текущего прогона - для привязки событий к нему
         self._task_id: int | None = None
 
     def _label(self, agent_id: int | None) -> str:
@@ -90,7 +90,7 @@ class Supervisor:
             return self._names[agent_id]
         return self.anon.label(agent_id)
 
-    # -- модель --------------------------------------------------------------
+    # модель
     def available(self) -> bool:
         """Можно ли вообще запустить супервайзера с текущими настройками."""
         try:
@@ -149,7 +149,7 @@ class Supervisor:
                 pass
             self._model = None
 
-    # -- вызов модели --------------------------------------------------------
+    # вызов модели
     async def _ask(self, system: str, user: str, task_id: int | None,
                    max_tokens: int = 1600) -> str:
         """Один вызов модели супервайзера с учётом расхода."""
@@ -194,7 +194,7 @@ class Supervisor:
                             agent_name="Супервайзер", message=message,
                             payload=payload))
 
-    # -- проверка отчёта -----------------------------------------------------
+    # проверка отчёта
     async def review(self, task: Task, subtask: Subtask, report: Report) -> Verdict:
         """Проверяет отчёт по чек-листу и возвращает вердикт.
 
@@ -221,7 +221,7 @@ class Supervisor:
             raw = await self._ask(REVIEW_SYSTEM, user, task.id)
         except asyncio.CancelledError:
             raise
-        except Exception as exc:  # noqa: BLE001 - любая причина равна «не проверено»
+        except Exception as exc:  # noqa: BLE001 - любая причина равна "не проверено"
             log.warning("Супервайзер не смог проверить отчёт: %s", exc)
             # Раньше непроверенный отчёт молча принимался. Это опаснее, чем
             # остановиться: ошибка ушла бы в зависимые подзадачи без следа.
@@ -266,7 +266,7 @@ class Supervisor:
                           f"{st.result[:1200]}")
         return "\n\n".join(chunks[-CONTEXT_REPORTS:])
 
-    # -- сводки --------------------------------------------------------------
+    # сводки
     async def make_summary(self, task: Task, trigger: str = "manual") -> str:
         """Составляет анонимную сводку и «рассылает» её всем агентам.
 
@@ -344,7 +344,7 @@ class Supervisor:
         self._summary_task = asyncio.ensure_future(loop())
         self._emit(EventType.LOG, f"сводки по таймеру: раз в {minutes} мин")
 
-    # -- конфликты -----------------------------------------------------------
+    # конфликты
     async def find_conflicts(self, task: Task) -> list[Conflict]:
         """Ищет прямые противоречия между результатами подзадач.
 

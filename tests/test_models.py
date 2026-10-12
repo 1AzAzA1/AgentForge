@@ -34,7 +34,7 @@ def _gemini(body: bytes) -> GeminiProvider:
     return provider
 
 
-# --- рекомендованные модели ------------------------------------------------------
+# рекомендованные модели
 
 
 def test_gemini_suggestions_work_for_new_keys():
@@ -68,7 +68,7 @@ def test_chat_model_filter():
         assert not is_chat_model(name), name
 
 
-# --- Gemini ----------------------------------------------------------------------------
+# Gemini
 
 
 def test_gemini3_payload_leaves_room_for_thinking_and_keeps_temperature_default():
@@ -113,7 +113,7 @@ async def test_gemini_model_list_hides_non_chat_models():
     await provider.aclose()
 
 
-# --- OpenAI ------------------------------------------------------------------------------
+# OpenAI
 
 
 def _openai() -> OpenAICompatProvider:

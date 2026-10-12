@@ -128,7 +128,7 @@ def export_docx(bundle: ResultBundle, options: ExportOptions,
 # PDF
 # ---------------------------------------------------------------------------
 
-#: где искать TrueType-шрифт с кириллицей
+# где искать TrueType-шрифт с кириллицей
 FONT_CANDIDATES = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
@@ -270,10 +270,10 @@ def _escape(raw: str) -> str:
     return (raw or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-#: управляющие символы, недопустимые в XML (DOCX их не принимает вовсе):
-#: всё ниже пробела, кроме табуляции и переводов строки
+# управляющие символы, недопустимые в XML (DOCX их не принимает вовсе):
+# всё ниже пробела, кроме табуляции и переводов строки
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
-#: ANSI-последовательности цвета из вывода терминала: «\x1b[31m»
+# ANSI-последовательности цвета из вывода терминала: "\x1b[31m"
 _ANSI = re.compile(r"\x1b\[[0-9;?]*[ -/]*[@-~]")
 
 

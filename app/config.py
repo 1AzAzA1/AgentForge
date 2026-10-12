@@ -15,7 +15,7 @@ from pathlib import Path
 
 APP_NAME = "Agent Forge"
 APP_SLUG = "agent-forge"
-#: каталог данных до переименования проекта (AI Orchestrator → Agent Forge)
+# каталог данных до переименования проекта (AI Orchestrator -> Agent Forge)
 LEGACY_SLUG = "ai-orchestrator"
 APP_VERSION = "1.1.1"          # 1.1.1: исправления после полного прохода по коду
 SCHEMA_VERSION = 2             # версия схемы SQLite (для миграций)
@@ -85,7 +85,7 @@ class AppSettings:
     """Настройки уровня приложения (не привязаны к пользователю)."""
 
     language: str = "ru"           # "ru" | "en"
-    #: насколько активны анимации интерфейса: "full" | "reduced" | "off"
+    # насколько активны анимации интерфейса: "full" | "reduced" | "off"
     motion: str = "full"
     last_username: str = ""
     remember_master_password: bool = False
