@@ -24,7 +24,7 @@ from storage.repositories import Repos
 
 log = logging.getLogger("aiorc.budget")
 
-#: во сколько раз поднимается лимит по решению пользователя
+# во сколько раз поднимается лимит по решению пользователя
 EXTEND_FACTOR = 1.5
 
 
@@ -117,15 +117,15 @@ class BudgetGuard:
         self.workspace_id = workspace_id
         self.task_id = task_id
         self._scopes: dict[tuple[str, int], ScopeState] = {}
-        #: лимит на уровне задачи взят из формы задачи, а не из таблицы budgets
+        # лимит на уровне задачи взят из формы задачи, а не из таблицы budgets
         self._task_limit_from_form = False
-        #: кто решает, что делать при исчерпании лимита; ``None`` - блокировать
+        # кто решает, что делать при исчерпании лимита; ``None`` - блокировать
         self.on_blocked: Callable[[ScopeState], Awaitable[bool]] | None = None
-        #: один вопрос на уровень: параллельные агенты ждут общего ответа
+        # один вопрос на уровень: параллельные агенты ждут общего ответа
         self._pending: dict[tuple[str, int], asyncio.Future] = {}
         self._load(task_token_limit)
 
-    # -- загрузка ------------------------------------------------------------
+    # загрузка
     def _load(self, task_token_limit: int | None) -> None:
         workspace = self.repos.workspaces.get(self.workspace_id)
         tokens, cost = self.repos.budgets.workspace_totals(self.workspace_id)
@@ -190,7 +190,7 @@ class BudgetGuard:
             return Limit()
         return Limit(row.token_limit, row.cost_limit_usd, row.alert_threshold)
 
-    # -- проверка ------------------------------------------------------------
+    # проверка
     def blocking_scope(self, agent_id: int | None = None) -> ScopeState | None:
         """Возвращает уровень, лимит которого исчерпан, или ``None``.
 
@@ -276,7 +276,7 @@ class BudgetGuard:
             parts.append(money(state.limit.cost_limit))
         return ", ".join(parts) or "без лимита"
 
-    # -- учёт ----------------------------------------------------------------
+    # учёт
     def add(self, tokens: int, cost: float, agent_id: int | None = None) -> None:
         """Записывает расход и при необходимости поднимает алерты."""
         keys = [("workspace", self.workspace_id)]
@@ -331,7 +331,7 @@ class BudgetGuard:
                          "ratio": state.ratio()},
             ))
 
-    # -- отчётность ----------------------------------------------------------
+    # отчётность
     def snapshot(self) -> list[ScopeState]:
         """Состояние всех уровней - для дашборда и страницы бюджетов."""
         order = {"workspace": 0, "task": 1, "agent": 2}

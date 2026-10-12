@@ -51,35 +51,25 @@ class Database:
         self.conn.execute("PRAGMA synchronous = NORMAL")
         self._migrate()
 
-    # -- singleton -----------------------------------------------------------
+    # singleton
     @classmethod
     def instance(cls) -> "Database":
         if cls._instance is None:
             cls._instance = Database()
         return cls._instance
 
-    # -- миграции ------------------------------------------------------------
+    # миграции
     def _migrate(self) -> None:
         """Применяет schema.sql и записывает версию схемы."""
         with self._lock:
             self.conn.executescript(_SCHEMA_FILE.read_text("utf-8"))
             cur = self.conn.execute("PRAGMA user_version")
             current = cur.fetchone()[0]
-            if current < 2:
-                # Версия 2: сохранённые промпты агентов приводятся к тому же
-                # набору символов, что и шаблоны ролей.
-                long_dash, mid_dash = chr(0x2014), chr(0x2013)
-                self.conn.execute(
-                    "UPDATE agents SET system_prompt = REPLACE(REPLACE(REPLACE("
-                    "system_prompt, ?, ' - '), ?, '-'), ?, '-') "
-                    "WHERE instr(system_prompt, ?) > 0 OR instr(system_prompt, ?) > 0",
-                    (f" {long_dash} ", long_dash, mid_dash, long_dash, mid_dash),
-                )
             if current != SCHEMA_VERSION:
                 self.conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             self.conn.commit()
 
-    # -- базовые операции ----------------------------------------------------
+    # базовые операции
     @contextmanager
     def transaction(self) -> Iterator[sqlite3.Connection]:
         """Несколько изменений одним коммитом: либо применяются все, либо ни одно.

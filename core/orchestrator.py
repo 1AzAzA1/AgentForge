@@ -29,11 +29,11 @@ from storage.repositories import Repos
 
 log = logging.getLogger("aiorc.orchestrator")
 
-#: сколько дополнительных кругов доработки может выдать человек
-#: сверх автоматического лимита супервайзера
+# сколько дополнительных кругов доработки может выдать человек
+# сверх автоматического лимита супервайзера
 USER_REWORK_LIMIT = 3
 
-#: сколько агентов могут работать одновременно, если в настройках не указано
+# сколько агентов могут работать одновременно, если в настройках не указано
 DEFAULT_CONCURRENCY = 6
 
 
@@ -66,7 +66,7 @@ class Orchestrator:
         self.state = RunState()
 
         self._pause = asyncio.Event()
-        self._pause.set()                       # «не на паузе»
+        self._pause.set()                       # "не на паузе"
         self._stop = asyncio.Event()
         self._tasks: set[asyncio.Task] = set()
         self._agent_locks: dict[int, asyncio.Lock] = {}
@@ -78,10 +78,10 @@ class Orchestrator:
         self._confidence_threshold: float = 0.0
         self._semaphore: asyncio.Semaphore | None = None
         self._workspace_id: int | None = None
-        #: id подзадач текущей задачи - зависимости на прочие id игнорируются
+        # id подзадач текущей задачи - зависимости на прочие id игнорируются
         self._known_ids: set[int] | None = None
 
-    # -- управление ----------------------------------------------------------
+    # управление
     def pause(self) -> None:
         if self.state.running and not self.state.paused:
             self.state.paused = True
@@ -111,7 +111,7 @@ class Orchestrator:
                             workspace_id=self._workspace_id,
                             message="Остановка по команде пользователя"))
 
-    # -- основной запуск -----------------------------------------------------
+    # основной запуск
     async def run_task(self, workspace_id: int, task_id: int,
                        concurrency: int | None = None) -> RunState:
         """Прогоняет все подзадачи задачи с учётом зависимостей."""
@@ -212,7 +212,7 @@ class Orchestrator:
         self.state = RunState(running=True, task_id=task_id, total=total,
                               started_at=utcnow())
 
-    # -- расписание ----------------------------------------------------------
+    # расписание
     async def _schedule(self, workspace_id: int, settings: dict, task: Task,
                         subtasks: list[Subtask]) -> None:
         """Волнами запускает подзадачи, у которых выполнены зависимости."""
@@ -252,7 +252,7 @@ class Orchestrator:
 
             # Завершён этап работ: если пользователь просил останавливаться
             # на контрольных точках, спрашиваем перед следующей волной.
-            # На последней волне вопрос не задаём - спрашивать «продолжать?»,
+            # На последней волне вопрос не задаём - спрашивать "продолжать?",
             # когда продолжать уже нечего, бессмысленно.
             if (pending and self._gate is not None and not self._stop.is_set()
                     and settings.get("hitl_pause_on_milestone")):
@@ -317,7 +317,7 @@ class Orchestrator:
     def _deps_met(self, subtask: Subtask, done_ids: set[int]) -> bool:
         return all(dep in done_ids for dep in self._deps(subtask))
 
-    # -- выполнение одной подзадачи -----------------------------------------
+    # выполнение одной подзадачи
     async def _run_subtask(self, workspace_id: int, settings: dict, task: Task,
                            subtask: Subtask) -> bool:
         agent = self.repos.agents.get(subtask.agent_id or 0)
@@ -350,7 +350,7 @@ class Orchestrator:
             max_rework = int(settings.get("max_rework_rounds", 2))
             notes = self._rework_notes(subtask)
 
-            # Цикл «выполнил → проверили → доработал». Лок агента держится
+            # Цикл "выполнил -> проверили -> доработал". Лок агента держится
             # всё это время: доработку делает тот же исполнитель, и его
             # личная история остаётся связной.
             #
@@ -384,7 +384,7 @@ class Orchestrator:
                 if accepted is not None:
                     return accepted
 
-                # accepted is None → назначена доработка, идём на новый круг.
+                # accepted is None -> назначена доработка, идём на новый круг.
                 # Потолок считается по числу выданных человеком кругов,
                 # а не относительно текущей попытки: иначе граница уезжала бы
                 # вперёд на каждом круге и цикл никогда бы не закончился.
@@ -399,7 +399,7 @@ class Orchestrator:
 
             # Сюда попадаем, когда человек снова вернул работу, а его круги
             # доработки уже исчерпаны. Подзадача не должна остаться висеть
-            # «на доработке»: прогон считал бы её не ошибкой, а ничем.
+            # "на доработке": прогон считал бы её не ошибкой, а ничем.
             self._fail(subtask, agent, f"исчерпан лимит доработок по «{subtask.title}»")
             self.repos.agents.set_status(agent.id, "idle")
             return False
@@ -453,7 +453,7 @@ class Orchestrator:
             self.repos.tasks.update_subtask(subtask.id, status="done")
             self.state.finished += 1
             # Замечания по подзадаче закрываем: результат принят, и открытый
-            # инцидент без причины висел бы на дашборде как «ждёт решения».
+            # инцидент без причины висел бы на дашборде как "ждёт решения".
             # Это и замечания, из-за которых работа уходила на доработку, и
             # мелкие пометки, которые супервайзер оставил, принимая отчёт.
             reworked = bool(subtask.rework_count or attempt > 0)
@@ -745,7 +745,7 @@ class Orchestrator:
         )
         return row["review_notes"] if row else ""
 
-    # -- служебное -----------------------------------------------------------
+    # служебное
     def _provider_for(self, agent: Agent) -> LLMProvider | None:
         """Кэширует по одному HTTP-клиенту на агента за прогон."""
         if agent.id in self._providers:
@@ -829,7 +829,7 @@ class Orchestrator:
             self._gate.cancel_all()
             self._gate = None
         # Прогон окончен: агенты, остановленные посреди работы или
-        # ожидавшие решения, больше не «работают» и не «на паузе».
+        # ожидавшие решения, больше не "работают" и не "на паузе".
         # Статус подзадачи (paused) сохраняется - по нему видно, что
         # её можно продолжить следующим запуском.
         if self._workspace_id is not None:

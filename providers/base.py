@@ -13,9 +13,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, AsyncIterator, Callable
 
-#: получатель фрагментов при потоковой генерации: (текст, вид). Вид -
-#: ``"text"`` для ответа модели или ``"reasoning"`` для рассуждения
-#: моделей, которые отдают его отдельно (DeepSeek-R1, Claude thinking и т.п.)
+# получатель фрагментов при потоковой генерации: (текст, вид). Вид -
+# ``"text"`` для ответа модели или ``"reasoning"`` для рассуждения
+# моделей, которые отдают его отдельно (DeepSeek-R1, Claude thinking и т.п.)
 DeltaHandler = Callable[[str, str], None]
 
 
@@ -28,9 +28,9 @@ def estimate_tokens(text: str) -> int:
     return max(1, len(text or "") // 4) if text else 0
 
 
-#: признаки моделей, которые не ведут диалог: озвучка, распознавание речи,
-#: картинки, видео, эмбеддинги, модерация. Агенту они не подходят, и в
-#: выпадающем списке только мешают выбрать рабочую модель.
+# признаки моделей, которые не ведут диалог: озвучка, распознавание речи,
+# картинки, видео, эмбеддинги, модерация. Агенту они не подходят, и в
+# выпадающем списке только мешают выбрать рабочую модель.
 _NOT_CHAT = re.compile(
     r"embed|whisper|tts|transcri|speech|audio|realtime|live|image|imagen|veo|"
     r"lyria|dall-e|moderation|guard|orpheus|robotics|computer-use|deep-research|"
@@ -49,8 +49,8 @@ class ToolCall:
     id: str
     name: str
     arguments: dict[str, Any] = field(default_factory=dict)
-    #: служебная подпись вызова, которую провайдер просит вернуть вместе с
-    #: ним в следующем запросе (``thoughtSignature`` у Gemini)
+    # служебная подпись вызова, которую провайдер просит вернуть вместе с
+    # ним в следующем запросе (``thoughtSignature`` у Gemini)
     signature: str = ""
 
     @staticmethod
@@ -124,7 +124,7 @@ class LLMProvider(ABC):
     и не хранить состояние диалога - вся история приходит в ``messages``.
     """
 
-    #: строковый идентификатор пресета (см. providers/presets.py)
+    # строковый идентификатор пресета (см. providers/presets.py)
     key: str = ""
 
     def __init__(self, api_key: str = "", base_url: str = "", timeout: float = 120.0) -> None:

@@ -266,7 +266,7 @@ async def _docker_kill(name: str) -> None:
         pass
 
 
-#: результат проверки Docker кэшируется: ``docker info`` занимает секунды
+# результат проверки Docker кэшируется: ``docker info`` занимает секунды
 _DOCKER_CACHE: dict[str, float | bool] = {}
 _DOCKER_TTL = 60.0
 

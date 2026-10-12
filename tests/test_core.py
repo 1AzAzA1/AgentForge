@@ -1,8 +1,5 @@
-"""Регрессионные тесты на исправления ядра версии 1.1.
-
-Каждый тест фиксирует конкретную ошибку, найденную при ревью: если она
-вернётся, тест упадёт с понятным названием.
-"""
+"""Тесты ядра: история агентов, локи, зависимости, бюджет, HITL и стриминг
+провайдеров."""
 
 from __future__ import annotations
 
@@ -28,7 +25,7 @@ def _events(bus: EventBus, *types: EventType) -> list:
     return seen
 
 
-# --- хранилище ----------------------------------------------------------------
+# хранилище
 
 
 def test_history_returns_latest_messages_in_order():
@@ -96,7 +93,7 @@ def test_recover_interrupted_runs_resets_stale_statuses():
     assert repos.agents.get(agents[0].id).status == "idle"
 
 
-# --- оркестратор ----------------------------------------------------------------
+# оркестратор
 
 
 async def test_agent_lock_is_taken_before_concurrency_slot():
@@ -178,7 +175,7 @@ async def test_unverified_result_does_not_flow_to_dependents_without_hitl():
     state = await drive(orch, ws.id, task.id)
 
     statuses = {s.id: s.status for s in repos.tasks.subtasks(task.id)}
-    assert statuses[first.id] == "review"      # ждёт человека, не «done»
+    assert statuses[first.id] == "review"      # ждёт человека, не "done"
     assert statuses[second.id] == "error"      # на непроверенном не строим
     assert state.finished == 0 and state.escalated == 1
     assert any(i.kind == "unverified" for i in repos.incidents.list(ws.id))
@@ -210,7 +207,7 @@ async def test_supervisor_spend_counts_toward_task_limit():
     state = await drive(orch, ws.id, task.id)
 
     # Без учёта супервайзера лимит 600 пропустил бы обе подзадачи
-    # (2 × 280 = 560). С учётом - вторая упирается в лимит.
+    # (2 * 280 = 560). С учётом - вторая упирается в лимит.
     assert worker.calls == 1
     assert state.tokens >= 280 + 400
     assert repos.tasks.subtasks(task.id)[1].status == "error"
@@ -275,7 +272,7 @@ async def test_agent_output_is_streamed_to_the_bus():
     assert all(e.payload.get("stream") == "text" for e in deltas)
 
 
-# --- human-in-the-loop -----------------------------------------------------------
+# human-in-the-loop
 
 
 async def test_gate_rejects_unknown_and_foreign_decisions():
@@ -296,14 +293,14 @@ async def test_gate_rejects_unknown_and_foreign_decisions():
     assert (await asking).decision is Decision.APPROVE
 
 
-# --- супервайзер -------------------------------------------------------------------
+# супервайзер
 
 
 def test_scrub_replaces_whole_words_longest_first():
     anon = Anonymizer()
     names = {1: "Лев", 2: "Аналитик Пётр"}
     out = anon.scrub("Аналитик Пётр и Лев согласны; Левша тоже.", names)
-    assert "Левша" in out                      # «Лев» не режет чужое слово
+    assert "Левша" in out                      # "Лев" не режет чужое слово
     assert "Пётр" not in out
     assert out.count("Исполнитель") == 2
 
@@ -317,7 +314,7 @@ def test_budget_guard_extend_updates_task_form_limit():
     assert repos.tasks.get(task.id).token_limit == 1800
 
 
-# --- провайдеры: разбор потоков ---------------------------------------------------
+# провайдеры: разбор потоков
 
 
 def _sse(events: list[dict | str]) -> bytes:

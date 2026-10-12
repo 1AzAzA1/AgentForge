@@ -37,7 +37,7 @@ class OpenAICompatProvider(LLMProvider):
         self._extra_headers = extra_headers or {}
         self._client: httpx.AsyncClient | None = None
 
-    # -- служебное -----------------------------------------------------------
+    # служебное
     def _headers(self) -> dict[str, str]:
         headers = {"Content-Type": "application/json", **self._extra_headers}
         if self.api_key:
@@ -83,7 +83,7 @@ class OpenAICompatProvider(LLMProvider):
         Официальный OpenAI API для новых моделей не принимает ``max_tokens``
         (нужен ``max_completion_tokens``), а «рассуждающие» модели (o1, o3,
         o4, gpt-5) отвергают любую температуру, кроме стандартной. Совместимые
-        серверы (Groq, Ollama, vLLM…) знают только ``max_tokens``.
+        серверы (Groq, Ollama, vLLM...) знают только ``max_tokens``.
         """
         payload: dict[str, Any] = {"model": model, "messages": self._to_wire(messages)}
         tool_payload = self._tools_payload(tools)
@@ -123,7 +123,7 @@ class OpenAICompatProvider(LLMProvider):
             for t in tools
         ]
 
-    # -- API -----------------------------------------------------------------
+    # API
     async def complete(self, model: str, messages: list[ChatMessage], *,
                        temperature: float = 0.7, max_tokens: int = 2048,
                        tools: list[ToolSpec] | None = None) -> CompletionResult:
@@ -312,10 +312,10 @@ class OpenAICompatProvider(LLMProvider):
         return sorted(n for n in names if is_chat_model(n))
 
 
-#: модели, которые через Chat Completions вызывают инструменты только при
-#: ``reasoning_effort: none`` (так написано в их карточках на сайте OpenAI)
+# модели, которые через Chat Completions вызывают инструменты только при
+# ``reasoning_effort: none`` (так написано в их карточках на сайте OpenAI)
 _TOOLS_NEED_NO_REASONING = ("gpt-6-luna", "gpt-6-sol", "gpt-5.6-luna")
-#: модели, которые через Chat Completions инструменты не вызывают вовсе
+# модели, которые через Chat Completions инструменты не вызывают вовсе
 _TOOLS_NEED_RESPONSES = ("gpt-6-astra", "gpt-6.1-sol")
 
 

@@ -313,7 +313,7 @@ class TaskRepo:
     def __init__(self, db: Database) -> None:
         self.db = db
 
-    # -- задачи --------------------------------------------------------------
+    # задачи
     def current(self, ws_id: int) -> Task | None:
         """Последняя (активная) задача воркспейса."""
         row = self.db.query_one(
@@ -345,7 +345,7 @@ class TaskRepo:
         params.extend([utcnow(), task_id])
         self.db.execute(f"UPDATE tasks SET {', '.join(sets)} WHERE id = ?", params)
 
-    # -- подзадачи -----------------------------------------------------------
+    # подзадачи
     def subtasks(self, task_id: int) -> list[Subtask]:
         rows = self.db.query(
             "SELECT * FROM subtasks WHERE task_id = ? ORDER BY order_index, id", (task_id,)

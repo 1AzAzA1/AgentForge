@@ -26,12 +26,12 @@ from providers.base import (
     is_chat_model,
 )
 
-#: сколько токенов сверх лимита ответа оставить «думающим» моделям: у Gemini
-#: ``maxOutputTokens`` включает размышления, и при лимите агента в 2048
-#: модель могла потратить всё на них и вернуть пустой ответ
+# сколько токенов сверх лимита ответа оставить "думающим" моделям: у Gemini
+# ``maxOutputTokens`` включает размышления, и при лимите агента в 2048
+# модель могла потратить всё на них и вернуть пустой ответ
 THINKING_HEADROOM = 8192
 
-#: почему кандидат остался пустым (``finishReason``) и что сказать человеку
+# почему кандидат остался пустым (``finishReason``) и что сказать человеку
 _EMPTY_REASONS = {
     "MAX_TOKENS": "модель израсходовала лимит токенов на размышления и не успела "
                   "ответить. Увеличьте «Макс. токенов» у агента",
@@ -110,7 +110,7 @@ class GeminiProvider(LLMProvider):
         if _thinks(model):
             # Размышления входят в maxOutputTokens: без запаса модель может
             # потратить весь лимит на них и не выдать ответа. Сами мысли
-            # просим присылать, чтобы экран «Выполнение» показывал их вживую.
+            # просим присылать, чтобы экран "Выполнение" показывал их вживую.
             config["maxOutputTokens"] = max_tokens + THINKING_HEADROOM
             config["thinkingConfig"] = {"includeThoughts": True}
         if _is_gemini3(model):
@@ -217,7 +217,7 @@ class GeminiProvider(LLMProvider):
             if "functionCall" in part:
                 calls.append(self._call(part))
             elif "text" in part and not part.get("thought"):
-                # Рассуждение «думающих» моделей в ответ не входит.
+                # Рассуждение "думающих" моделей в ответ не входит.
                 text_parts.append(part["text"])
         text = "".join(text_parts)
         _raise_if_empty(text, calls, candidate.get("finishReason", ""),
@@ -287,8 +287,8 @@ def _raise_if_empty(text: str, calls: list[ToolCall], finish_reason: str,
         raise ProviderError(f"Gemini: {_EMPTY_REASONS[reason]} ({reason})")
 
 
-#: ключи JSON Schema, которые понимает ``functionDeclarations``; прочие
-#: (``default``, ``additionalProperties``, ``$schema``…) Gemini отвергает
+# ключи JSON Schema, которые понимает ``functionDeclarations``; прочие
+# (``default``, ``additionalProperties``, ``$schema``...) Gemini отвергает
 _SCHEMA_KEYS = {"type", "format", "description", "nullable", "enum", "properties",
                 "required", "items", "minimum", "maximum", "minItems", "maxItems"}
 

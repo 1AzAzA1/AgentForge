@@ -17,7 +17,7 @@ from core.tools.base import Tool, ToolContext, ToolError
 
 MAX_RESULTS = 8
 MAX_PAGE_CHARS = 20_000
-#: сколько байт страницы скачивать не больше
+# сколько байт страницы скачивать не больше
 MAX_DOWNLOAD_BYTES = 5_000_000
 
 
@@ -175,7 +175,7 @@ async def _brave(query: str, n: int, api_key: str) -> list[dict]:
 
 
 def _extract_text(html: str) -> str:
-    """Извлекает основной текст: trafilatura → bs4 → грубый фолбэк."""
+    """Извлекает основной текст: trafilatura -> bs4 -> грубый фолбэк."""
     try:
         import trafilatura
 

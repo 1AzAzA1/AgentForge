@@ -1,8 +1,5 @@
-"""Регрессионные тесты на ошибки, найденные при полном проходе по коду.
-
-Как и в ``test_core_fixes.py``, каждый тест назван по ошибке: если она
-вернётся, по названию упавшего теста сразу понятно, что сломалось.
-"""
+"""Регрессионные тесты: хранилище, супервайзер, оркестратор, бюджет,
+провайдеры и экспорт."""
 
 from __future__ import annotations
 
@@ -19,12 +16,7 @@ from providers.base import ChatMessage, LLMProvider, ProviderError, ToolCall, To
 from providers.gemini_provider import GeminiProvider
 from providers.openai_compat import OpenAICompatProvider
 from storage.models import Subtask, Task, Workspace
-from storage.repositories import Repos, UserRepo
 from tests.fakes import SupervisorProvider, Worker, build_project, drive, patch_supervisor
-
-
-#: символы, которые миграция версии 2 заменяет в сохранённых промптах
-EM, EN = chr(0x2014), chr(0x2013)
 
 
 def _events(bus: EventBus, *types: EventType) -> list:
@@ -33,7 +25,7 @@ def _events(bus: EventBus, *types: EventType) -> list:
     return seen
 
 
-# --- хранилище ------------------------------------------------------------------
+# хранилище
 
 
 def test_change_password_keeps_search_api_key():
@@ -48,27 +40,6 @@ def test_change_password_keeps_search_api_key():
     assert repos.secrets.open(token) == "tvly-secret"
 
 
-def test_migration_normalizes_saved_prompts(tmp_path):
-    from storage.db import Database
-
-    path = tmp_path / "old.db"
-    db = Database(path)
-    session = UserRepo(db).create("prompt-owner", "password123")
-    repos = Repos(db, session)
-    ws = repos.workspaces.create(session.user_id, "W", "", {})
-    agent = repos.agents.create(ws.id, "A", "analyst", f"Ты {EM} аналитик, 2{EN}5 фактов",
-                                None, "openai", "m", {})
-    db.conn.execute("PRAGMA user_version = 1")        # база прежней версии
-    db.conn.commit()
-    db.close()
-
-    reopened = Database(path)
-    prompt = reopened.query_one("SELECT system_prompt FROM agents WHERE id = ?",
-                                (agent.id,))["system_prompt"]
-    assert prompt == "Ты - аналитик, 2-5 фактов"
-    reopened.close()
-
-
 def test_failed_statement_does_not_leave_open_transaction():
     repos, *_ = build_project()
     try:
@@ -76,11 +47,11 @@ def test_failed_statement_does_not_leave_open_transaction():
                          (999_999, "призрак", "2026-01-01"))
     except Exception:  # noqa: BLE001 - нарушение внешнего ключа ожидаемо
         pass
-    with repos.db.transaction() as conn:          # раньше: «transaction within a transaction»
+    with repos.db.transaction() as conn:
         conn.execute("SELECT 1")
 
 
-# --- супервайзер ------------------------------------------------------------------
+# супервайзер
 
 
 def test_verdict_without_field_is_not_accepted():
@@ -101,10 +72,10 @@ async def test_accepted_result_closes_supervisor_notes():
     await drive(orch, workspace.id, task.id)
 
     statuses = {i.status for i in repos.incidents.list(workspace.id)}
-    assert statuses == {"resolved"}          # не висит «ждёт решения» на дашборде
+    assert statuses == {"resolved"}          # не висит "ждёт решения" на дашборде
 
 
-# --- оркестратор и исполнитель ------------------------------------------------------
+# оркестратор и исполнитель
 
 
 class _Broken(LLMProvider):
@@ -124,7 +95,7 @@ async def test_failed_subtask_is_reported_once():
     orch._provider_for = lambda agent: _Broken()
     await drive(orch, workspace.id, task.id)
 
-    assert len(failed) == 1                  # раньше приходило два одинаковых
+    assert len(failed) == 1
     assert "модель недоступна" in failed[0].message
 
 
@@ -139,7 +110,7 @@ async def test_exhausted_user_reworks_mark_subtask_as_error():
     state = await drive(orch, workspace.id, task.id, fallback=Decision.REWORK)
 
     subtask = repos.tasks.subtasks(task.id)[0]
-    assert subtask.status == "error"         # не «на доработке» навсегда
+    assert subtask.status == "error"         # не "на доработке" навсегда
     assert state.failed == 1
 
 
@@ -168,7 +139,7 @@ async def test_agents_are_idle_after_stop():
     assert {repos.agents.get(a.id).status for a in agents} == {"idle"}
 
 
-# --- бюджет -------------------------------------------------------------------------
+# бюджет
 
 
 def test_budget_limit_change_applies_to_running_guard():
@@ -183,7 +154,7 @@ def test_budget_limit_change_applies_to_running_guard():
     assert blocked is not None and blocked.scope == "agent"
 
 
-# --- провайдеры ---------------------------------------------------------------------
+# провайдеры
 
 
 def test_openai_payload_matches_api_family():
@@ -230,7 +201,7 @@ def test_gemini_schema_drops_unsupported_keys():
     assert params == {"type": "object", "properties": {"n": {"type": "integer"}}}
 
 
-# --- экспорт --------------------------------------------------------------------------
+# экспорт
 
 
 def _bundle(result: str, title: str = "T", description: str = "d") -> ResultBundle:
@@ -247,7 +218,7 @@ def test_docx_export_survives_terminal_output(tmp_path):
 
 
 def test_format_detection_ignores_word_fragments():
-    # «api» внутри «capital» и «app» внутри «happy» - не про код.
+    # "api" внутри "capital" и "app" внутри "happy" - не про код.
     fmt, _ = detect_format(_bundle("коротко", "Столица Франции",
                                    "Назови capital и один happy fact"))
     assert fmt != "zip"
