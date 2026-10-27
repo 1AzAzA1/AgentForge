@@ -1,8 +1,11 @@
-"""Автоматическое разбиение задачи на подзадачи через ИИ (этап 3).
+"""Автоматическое разбиение задачи на подзадачи через ИИ.
 
-Планировщик - обычный вызов модели с требованием вернуть строгий JSON.
-Модель берётся у агента-супервайзера, а если он не назначен - у первого
-доступного агента воркспейса.
+Планировщик - обычный вызов модели с требованием вернуть строгий JSON:
+список подзадач с ролью исполнителя и зависимостями. Из зависимостей
+получается граф: независимые подзадачи идут параллельно, а подзадача,
+которой нужны чужие результаты, ждёт их. Модель берётся у
+агента-супервайзера, а если он не назначен - у первого доступного агента
+воркспейса.
 """
 
 from __future__ import annotations
@@ -10,7 +13,7 @@ from __future__ import annotations
 import json
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from providers.base import ChatMessage
 from providers.factory import build_provider, estimate_cost
@@ -21,16 +24,25 @@ log = logging.getLogger("aiorc.planner")
 
 PLANNER_SYSTEM = """\
 Ты - планировщик работ. Тебе дают формулировку задачи и список доступных \
-исполнителей с их ролями. Разбей задачу на 3-8 последовательных подзадач.
+исполнителей с их ролями. Разбей задачу на 2-6 подзадач и расставь \
+зависимости между ними.
 
 Требования к разбиению:
 - каждая подзадача самодостаточна и проверяема, её результат можно предъявить;
-- подзадачи не дублируют друг друга;
+- подзадачи не дублируют друг друга; простой задаче хватит двух;
 - исполнитель подбирается по роли; если подходящего нет, ставь assignee_role = null;
 - формулировки конкретные, без общих слов вроде «проработать вопрос».
 
+Зависимости:
+- depends_on - номера подзадач (с 1), результаты которых нужны этой подзадаче;
+- ссылаться можно только на подзадачи с меньшим номером;
+- независимые подзадачи не связывай: они пойдут параллельно;
+- последняя подзадача сводит результаты и даёт итоговый ответ на всю задачу, \
+поэтому зависит от всех подзадач, чьи результаты нужны для ответа.
+
 Ответь СТРОГО одним JSON-объектом без markdown-разметки и пояснений:
-{"subtasks": [{"title": "...", "description": "...", "assignee_role": "analyst"}]}
+{"subtasks": [{"title": "...", "description": "...", "assignee_role": "analyst", \
+"depends_on": []}]}
 """
 
 
@@ -39,6 +51,8 @@ class PlannedSubtask:
     title: str
     description: str
     assignee_role: str | None = None
+    # номера подзадач этого же плана (с 1), от которых зависит эта
+    depends_on: list[int] = field(default_factory=list)
 
 
 def _extract_json(text: str) -> dict:
@@ -134,21 +148,64 @@ async def plan_subtasks(repos: Repos, workspace_id: int,
         items = data["subtasks"]
     else:
         items = []
-    out: list[PlannedSubtask] = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        title = str(item.get("title", "")).strip()
-        if not title:
-            continue
-        out.append(PlannedSubtask(
-            title=title,
-            description=str(item.get("description", "")).strip(),
-            assignee_role=(str(item.get("assignee_role") or "").strip() or None),
-        ))
+    out = parse_plan(items)
     if not out:
         raise RuntimeError("Модель не вернула ни одной подзадачи.")
     return out
+
+
+def parse_plan(items: list) -> list[PlannedSubtask]:
+    """Превращает ответ модели в план, отбрасывая ошибочные зависимости.
+
+    Номера в ``depends_on`` относятся к исходному списку модели. Пропущенные
+    (без названия) элементы сдвигают нумерацию, поэтому номера пересчитываются.
+    Ссылка вперёд, на себя или на несуществующий номер выбрасывается: так в
+    графе не может появиться цикл.
+    """
+    kept: list[tuple[int, dict]] = []
+    for index, item in enumerate(items, 1):
+        if isinstance(item, dict) and str(item.get("title", "")).strip():
+            kept.append((index, item))
+    position = {orig: new for new, (orig, _) in enumerate(kept, 1)}
+
+    out: list[PlannedSubtask] = []
+    for new_index, (_, item) in enumerate(kept, 1):
+        deps: list[int] = []
+        raw = item.get("depends_on") or []
+        if not isinstance(raw, list):
+            raw = [raw]
+        for value in raw:
+            try:
+                dep = position.get(int(str(value).strip()))
+            except ValueError:
+                continue
+            if dep is not None and dep < new_index and dep not in deps:
+                deps.append(dep)
+        out.append(PlannedSubtask(
+            title=str(item.get("title", "")).strip(),
+            description=str(item.get("description", "")).strip(),
+            assignee_role=(str(item.get("assignee_role") or "").strip() or None),
+            depends_on=deps,
+        ))
+    return out
+
+
+def create_planned_subtasks(repos: Repos, workspace_id: int, task_id: int,
+                            planned: list[PlannedSubtask]) -> list[int]:
+    """Создаёт подзадачи плана, назначает исполнителей и связывает зависимости.
+
+    Возвращает id созданных подзадач в порядке плана.
+    """
+    ids: list[int] = []
+    for item in planned:
+        agent_id = match_agent_by_role(repos, workspace_id, item.assignee_role)
+        subtask = repos.tasks.add_subtask(task_id, item.title, item.description, agent_id)
+        ids.append(subtask.id)
+    for item, sid in zip(planned, ids):
+        deps = [ids[d - 1] for d in item.depends_on if 0 < d <= len(ids)]
+        if deps:
+            repos.tasks.update_subtask(sid, depends_on=",".join(map(str, deps)))
+    return ids
 
 
 def match_agent_by_role(repos: Repos, workspace_id: int, role: str | None) -> int | None:
