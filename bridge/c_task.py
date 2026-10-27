@@ -13,7 +13,7 @@ from bridge.state import (
     rpc,
     status_title,
 )
-from core.planner import match_agent_by_role, plan_subtasks
+from core.planner import create_planned_subtasks, plan_subtasks
 from utils.asyncutils import run_async
 
 FORMATS = ["auto", "markdown", "docx", "pdf", "zip"]
@@ -240,7 +240,8 @@ class TaskController(Controller):
 
     @rpc
     def autosplit(self) -> None:
-        """ИИ разбивает задачу и сразу назначает исполнителей по ролям."""
+        """ИИ разбивает задачу, назначает исполнителей по ролям и расставляет
+        зависимости между подзадачами."""
         task = self.repos.tasks.current(self.ws_id) if self.ws_id else None
         if task is None or not task.description.strip():
             self.toast("warning", tr("task.save_first"), "")
@@ -253,9 +254,7 @@ class TaskController(Controller):
             # Пока модель думала, пользователь мог выйти из профиля.
             if not self.ready:
                 return
-            for item in planned:
-                agent_id = match_agent_by_role(self.repos, ws_id, item.assignee_role)
-                self.repos.tasks.add_subtask(task_id, item.title, item.description, agent_id)
+            create_planned_subtasks(self.repos, ws_id, task_id, planned)
             self.refresh()
             self.backend.run.refresh()
             self.toast("success", tr("toast.planned"), tr("toast.planned_n", n=len(planned)))
