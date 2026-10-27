@@ -17,7 +17,7 @@ APP_NAME = "Agent Forge"
 APP_SLUG = "agent-forge"
 # каталог данных до переименования проекта (AI Orchestrator -> Agent Forge)
 LEGACY_SLUG = "ai-orchestrator"
-APP_VERSION = "1.1.1"          # 1.1.1: исправления после полного прохода по коду
+APP_VERSION = "1.2.0"
 SCHEMA_VERSION = 2             # версия схемы SQLite (для миграций)
 
 

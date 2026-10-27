@@ -534,7 +534,7 @@ def current_language() -> str:
 
 
 def catalog_for(code: str) -> dict[str, str]:
-    """Словарь строк языка (для моста QML)."""
+    """Словарь строк языка (окно получает его целиком)."""
     return _CATALOG.get(code, RU)
 
 

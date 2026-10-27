@@ -17,7 +17,7 @@ from providers.base import ChatMessage, ProviderError, ToolSpec, is_chat_model
 from providers.gemini_provider import THINKING_HEADROOM, GeminiProvider
 from providers.openai_compat import OpenAICompatProvider
 from providers.presets import PRESETS
-from ui.bridge.c_agents import ordered_models
+from bridge.c_agents import ordered_models
 
 TOOL = ToolSpec("read_file", "читает файл", {"type": "object", "properties": {}})
 MESSAGES = [ChatMessage("system", "Ты агент."), ChatMessage("user", "задача")]

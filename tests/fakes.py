@@ -63,6 +63,52 @@ class Worker(LLMProvider):
         )
 
 
+class StreamingWorker(LLMProvider):
+    """Исполнитель, который "печатает" ответ по кусочкам, как настоящий стриминг.
+
+    На первом шаге думает вслух и зовёт песочницу, на втором пишет отчёт.
+    """
+
+    def __init__(self, name: str, confidence: str = "0.86", delay: float = 0.01) -> None:
+        super().__init__()
+        self.name = name
+        self.confidence = confidence
+        self.delay = delay
+        self.calls = 0
+
+    async def list_models(self) -> list[str]:
+        return ["demo-model"]
+
+    async def aclose(self) -> None:
+        return None
+
+    async def complete(self, model, messages, *, temperature=0.7, max_tokens=2048, tools=None):
+        return await self.stream_complete(model, messages, tools=tools)
+
+    async def stream_complete(self, model, messages, *, temperature=0.7, max_tokens=2048,
+                              tools=None, on_delta=None):
+        self.calls += 1
+        if self.calls == 1 and tools:
+            thought = f"{self.name}: сначала соберу данные по теме, затем проверю цифры.\n"
+            for part in thought.split(" "):
+                if on_delta:
+                    on_delta(part + " ", "reasoning")
+                await asyncio.sleep(self.delay)
+            return CompletionResult(
+                text="Проверю расчёт в песочнице.",
+                tool_calls=[ToolCall("c1", "code_exec", {"code": "print(21 * 2)"})],
+                usage=Usage(420, 60))
+        text = (f"Итоги работы {self.name}. Сравнил три источника, расхождений в ключевых "
+                f"цифрах нет; оценка рынка подтверждена расчётом.\n"
+                f"CONFIDENCE: {self.confidence}\nRESULT:\nКраткий вывод {self.name}: рынок "
+                f"растёт на 18% в год, основные риски связаны с регулированием.")
+        for i in range(0, len(text), 9):
+            if on_delta:
+                on_delta(text[i:i + 9], "text")
+            await asyncio.sleep(self.delay)
+        return CompletionResult(text=text, usage=Usage(900, 180))
+
+
 class SupervisorProvider(LLMProvider):
     """Проверяющий: вердикты задаются списком, остальное - заглушки."""
 

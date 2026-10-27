@@ -227,3 +227,7 @@ exports/
 
 # скриншоты тура по интерфейсу
 shots/
+
+# окно на Electron: зависимости и сборка
+node_modules/
+desktop/dist/
