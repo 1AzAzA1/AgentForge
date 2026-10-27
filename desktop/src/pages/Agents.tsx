@@ -133,7 +133,7 @@ export function Agents() {
             <Card key={a.id} className="agent-card" hoverable stagger={i} glow={a.status === "running"} glowColor="var(--cyan)" dimmed={!a.enabled}>
               <div className="row" style={{ gap: 12 }}>
                 <div className="avatar-wrap">
-                  <Avatar icon={a.icon} size={46} from={a.isSupervisor ? "var(--magenta)" : "var(--violet)"} to={a.isSupervisor ? "var(--violet-soft)" : "var(--cyan)"} />
+                  <Avatar icon={a.icon} size={46} from={a.isSupervisor ? "var(--magenta)" : "var(--primary)"} to={a.isSupervisor ? "var(--primary-soft)" : "var(--cyan)"} />
                   <span className="avatar-status"><StatusDot status={a.status} size={11} /></span>
                 </div>
                 <div className="grow">

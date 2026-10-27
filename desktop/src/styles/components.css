@@ -31,19 +31,19 @@
 .btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--danger) 22%, transparent); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
 .btn-success { color: var(--success); background: color-mix(in srgb, var(--success) 12%, transparent); border-color: color-mix(in srgb, var(--success) 35%, transparent); }
 .btn-success:hover:not(:disabled) { background: color-mix(in srgb, var(--success) 22%, transparent); }
-.btn-primary { border: none; background: transparent; color: white; }
+.btn-primary { border: none; background: transparent; color: var(--on-primary); }
 .btn-primary:hover:not(:disabled) { background: transparent; }
 .btn-fill {
   position: absolute;
   inset: 0;
   z-index: -2;
-  background: linear-gradient(90deg, var(--violet), var(--indigo));
+  background: linear-gradient(90deg, var(--primary), var(--teal));
 }
 .btn-fill::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #9d72ff, #7c7ffb);
+  background: linear-gradient(90deg, var(--primary-soft), #5eead4);
   opacity: 0;
   transition: opacity var(--fast);
 }
@@ -182,8 +182,8 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--violet) 35%, transparent), color-mix(in srgb, var(--teal) 18%, transparent));
-  border: 1px solid color-mix(in srgb, var(--violet-soft) 35%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 35%, transparent), color-mix(in srgb, var(--teal) 18%, transparent));
+  border: 1px solid color-mix(in srgb, var(--primary-soft) 35%, transparent);
   margin-bottom: 6px;
   animation: float 3.6s ease-in-out infinite;
 }
@@ -235,13 +235,13 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
 .field-box:focus-within,
 .field-box.is-open {
   background: var(--surface2);
-  border-color: var(--violet);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 18%, transparent);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 .field-box.is-error { border-color: var(--danger); }
 .field-box.is-error:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent); }
 .field-icon { position: absolute; left: 12px; color: var(--text-mute); pointer-events: none; transition: color var(--fast); }
-.field-box:focus-within .field-icon { color: var(--violet-soft); }
+.field-box:focus-within .field-icon { color: var(--primary-soft); }
 .field-input {
   width: 100%;
   height: calc(var(--control-h) + 2px);
@@ -294,8 +294,8 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   cursor: pointer;
   transition: background-color var(--fast);
 }
-.select-item.is-hover { background: color-mix(in srgb, var(--violet) 16%, transparent); }
-.select-item.is-current { color: var(--violet-soft); font-weight: 600; }
+.select-item.is-hover { background: color-mix(in srgb, var(--primary) 16%, transparent); }
+.select-item.is-current { color: var(--primary-soft); font-weight: 600; }
 
 .toggle {
   display: flex;
@@ -322,7 +322,7 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   transition: background-color var(--normal), border-color var(--normal);
 }
 .toggle:hover .toggle-track { border-color: var(--border-strong); }
-.toggle-track.is-on { background: linear-gradient(90deg, var(--violet), var(--teal)); border-color: transparent; }
+.toggle-track.is-on { background: linear-gradient(90deg, var(--primary), var(--teal)); border-color: transparent; }
 .toggle-knob {
   position: absolute;
   top: 2px;
@@ -351,11 +351,11 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
 .chip:hover { background: var(--surface3); }
 .chip.is-on {
   color: var(--text);
-  background: color-mix(in srgb, var(--violet) 18%, transparent);
-  border-color: color-mix(in srgb, var(--violet) 65%, transparent);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 65%, transparent);
 }
 .chip-glyph { display: inline-flex; color: var(--text-mute); }
-.chip.is-on .chip-glyph { color: var(--violet-soft); }
+.chip.is-on .chip-glyph { color: var(--primary-soft); }
 
 .segmented {
   display: inline-flex;
@@ -391,13 +391,13 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   position: absolute;
   inset: 0;
   border-radius: var(--radius-s);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--violet) 90%, transparent), color-mix(in srgb, var(--indigo) 90%, transparent));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 90%, transparent), color-mix(in srgb, var(--teal) 90%, transparent));
 }
 .seg-content { position: relative; display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 
 .slider { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 0; }
 .slider.is-disabled { opacity: 0.45; }
-.slider-value { font-size: var(--fs-small); font-weight: 600; color: var(--violet-soft); }
+.slider-value { font-size: var(--fs-small); font-weight: 600; color: var(--primary-soft); }
 .slider input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -410,7 +410,7 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
 .slider input[type="range"]::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--violet), var(--teal)) 0 / var(--pct) 100% no-repeat, var(--surface3);
+  background: linear-gradient(90deg, var(--primary), var(--teal)) 0 / var(--pct) 100% no-repeat, var(--surface3);
 }
 .slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -419,11 +419,11 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   margin-top: -6px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--violet) 25%, transparent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 25%, transparent);
   transition: transform var(--fast) var(--ease), box-shadow var(--fast);
 }
 .slider input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.1); }
-.slider input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.25); box-shadow: 0 0 0 6px color-mix(in srgb, var(--violet) 25%, transparent); }
+.slider input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.25); box-shadow: 0 0 0 6px color-mix(in srgb, var(--primary) 25%, transparent); }
 
 /* --- окна и уведомления ----------------------------------------------------- */
 .sheet-overlay {
@@ -451,7 +451,7 @@ html[data-motion="full"] .card-hover:hover { translate: 0 -2px; }
   position: absolute;
   inset: 0 0 auto;
   height: 90px;
-  background: linear-gradient(color-mix(in srgb, var(--violet) 10%, transparent), transparent);
+  background: linear-gradient(color-mix(in srgb, var(--primary) 10%, transparent), transparent);
   pointer-events: none;
 }
 .sheet-head { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 24px 24px 8px; }

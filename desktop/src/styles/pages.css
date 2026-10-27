@@ -48,8 +48,8 @@
   height: 34px;
   flex: none;
   border-radius: 11px;
-  background: color-mix(in srgb, var(--violet) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--violet-soft) 25%, transparent);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-soft) 25%, transparent);
 }
 .login-side { position: relative; flex: 0 0 560px; display: grid; place-items: center; }
 .login-card {
@@ -132,13 +132,13 @@
 .nav-item .nav-icon { color: var(--text-mute); transition: color var(--fast); }
 .nav-item:hover .nav-icon { color: var(--text); }
 .nav-item.is-active { color: var(--text); font-weight: 600; }
-.nav-item.is-active .nav-icon { color: var(--violet-soft); }
+.nav-item.is-active .nav-icon { color: var(--primary-soft); }
 .nav-highlight {
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--violet) 28%, transparent), color-mix(in srgb, var(--cyan) 6%, transparent));
-  border: 1px solid color-mix(in srgb, var(--violet-soft) 25%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 28%, transparent), color-mix(in srgb, var(--cyan) 6%, transparent));
+  border: 1px solid color-mix(in srgb, var(--primary-soft) 25%, transparent);
 }
 .nav-highlight-bar {
   position: absolute;
@@ -148,7 +148,7 @@
   height: 18px;
   margin-top: -9px;
   border-radius: 2px;
-  background: linear-gradient(var(--violet-soft), var(--cyan));
+  background: linear-gradient(var(--primary-soft), var(--cyan));
 }
 .profile-card {
   display: flex;
@@ -164,7 +164,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--violet), var(--teal));
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  color: var(--on-primary);
   font-weight: 700;
 }
 
@@ -239,7 +240,7 @@
   cursor: pointer;
 }
 .palette-item > .grow { color: var(--text); }
-.palette-item.is-selected { background: color-mix(in srgb, var(--violet) 18%, transparent); color: var(--violet-soft); }
+.palette-item.is-selected { background: color-mix(in srgb, var(--primary) 18%, transparent); color: var(--primary-soft); }
 
 /* --- страница --------------------------------------------------------------- */
 .page { display: flex; flex-direction: column; height: 100%; min-height: 0; }
@@ -252,8 +253,8 @@
   height: 44px;
   flex: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--violet) 30%, transparent), color-mix(in srgb, var(--cyan) 14%, transparent));
-  border: 1px solid color-mix(in srgb, var(--violet-soft) 30%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 30%, transparent), color-mix(in srgb, var(--cyan) 14%, transparent));
+  border: 1px solid color-mix(in srgb, var(--primary-soft) 30%, transparent);
 }
 .page-actions { flex: none; }
 .page-body {
@@ -472,7 +473,7 @@
   transition: background-color var(--fast), border-color var(--fast);
 }
 .provider-tile:hover { background: var(--surface3); }
-.provider-tile.is-chosen { background: color-mix(in srgb, var(--violet) 16%, transparent); border-color: var(--violet); }
+.provider-tile.is-chosen { background: color-mix(in srgb, var(--primary) 16%, transparent); border-color: var(--primary); }
 .provider-notes {
   display: flex;
   flex-direction: column;

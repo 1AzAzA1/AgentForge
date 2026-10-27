@@ -1,6 +1,6 @@
 // Индикатор ожидания: дуга, которая крутится. Без движения - неподвижная дуга.
 
-export function Spinner({ size = 16, color = "var(--violet-soft)" }: { size?: number; color?: string }) {
+export function Spinner({ size = 16, color = "var(--primary-soft)" }: { size?: number; color?: string }) {
   const r = size / 2 - 1.5;
   const c = 2 * Math.PI * r;
   return (

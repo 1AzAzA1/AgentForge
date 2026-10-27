@@ -62,7 +62,7 @@ export function Dashboard() {
           <Card stagger={2}>
             <div className="col" style={{ gap: 12 }}>
               <div className="row">
-                <Icon name="list-checks" color="var(--violet-soft)" />
+                <Icon name="list-checks" color="var(--primary-soft)" />
                 <span className="h3 grow ellipsis">{ctl.taskTitle || t("task.no_task")}</span>
                 {ctl.total > 0 && (
                   <span className="mono dim">
@@ -89,8 +89,8 @@ export function Dashboard() {
                 <LineChart
                   points={series === "cost" ? ctl.costSeries ?? [] : ctl.tokenSeries ?? []}
                   unit={series === "cost" ? "usd" : "tokens"}
-                  color={series === "cost" ? "var(--teal)" : "var(--violet-soft)"}
-                  fill={series === "cost" ? "var(--teal)" : "var(--violet)"}
+                  color={series === "cost" ? "var(--teal)" : "var(--primary-soft)"}
+                  fill={series === "cost" ? "var(--teal)" : "var(--primary)"}
                   emptyText={t("dash.no_usage")}
                 />
               </div>
@@ -100,7 +100,7 @@ export function Dashboard() {
                 {ctl.supervisorShare > 0 && (
                   <Badge
                     text={t("dash.sup_share", { pct: Math.round(ctl.supervisorShare * 100) })}
-                    tone={ctl.supervisorShare > 0.5 ? "warning" : "violet"}
+                    tone={ctl.supervisorShare > 0.5 ? "warning" : "primary"}
                     icon="shield-check"
                   />
                 )}
@@ -118,11 +118,11 @@ export function Dashboard() {
               {agents.map((a) => (
                 <div key={a.id} className="dash-agent">
                   <StatusDot status={a.status} />
-                  <Icon name={a.icon} size={15} color={a.isSupervisor ? "var(--magenta)" : "var(--violet-soft)"} />
+                  <Icon name={a.icon} size={15} color={a.isSupervisor ? "var(--magenta)" : "var(--primary-soft)"} />
                   <span className="medium ellipsis" style={{ width: 180 }}>{a.name}</span>
                   <span className={`small grow ellipsis ${a.doing ? "dim" : "mute"}`}>{a.doing ? `→ ${a.doing}` : a.statusTitle}</span>
                   <div className="track" style={{ width: 120, height: 5 }}>
-                    <motion.div className="track-fill" style={{ background: "var(--violet)" }} initial={false} animate={{ width: `${Math.min(1, a.share) * 100}%` }} transition={m.ease(420)} />
+                    <motion.div className="track-fill" style={{ background: "var(--primary)" }} initial={false} animate={{ width: `${Math.min(1, a.share) * 100}%` }} transition={m.ease(420)} />
                   </div>
                   <span className="mono small dim num">{a.tokens}</span>
                   <span className="mono small num" style={{ color: "var(--teal)" }}>{a.cost}</span>
@@ -177,12 +177,12 @@ export function Dashboard() {
 function Metric({ idx, icon, caption, value, unit = "int", total = "", color, onClick }: {
   idx: number; icon: string; caption: string; value: number; unit?: string; total?: string; color?: string; onClick?: () => void;
 }) {
-  const accent = color ?? "var(--violet-soft)";
+  const accent = color ?? "var(--primary-soft)";
   return (
     <Card stagger={idx} hoverable padding={16} onClick={onClick}>
       <div className="col" style={{ gap: 6 }}>
         <div className="row">
-          <div className="icon-tile" style={{ width: 30, height: 30, borderRadius: 9, background: alpha(color ?? "var(--violet)", 0.14), color: accent }}>
+          <div className="icon-tile" style={{ width: 30, height: 30, borderRadius: 9, background: alpha(color ?? "var(--primary)", 0.14), color: accent }}>
             <Icon name={icon} size={15} />
           </div>
           <span className="spacer" />

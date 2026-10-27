@@ -9,8 +9,8 @@ export const C = {
   text: "var(--text)",
   textDim: "var(--text-dim)",
   textMute: "var(--text-mute)",
-  violet: "var(--violet)",
-  violetSoft: "var(--violet-soft)",
+  primary: "var(--primary)",
+  primarySoft: "var(--primary-soft)",
   indigo: "var(--indigo)",
   teal: "var(--teal)",
   cyan: "var(--cyan)",
@@ -30,7 +30,7 @@ export function tone(name: string): string {
     case "info": return C.info;
     case "accent":
     case "tool": return C.cyan;
-    case "violet": return C.violetSoft;
+    case "primary": return C.primarySoft;
     case "muted": return C.textMute;
     default: return C.textDim;
   }
@@ -40,7 +40,7 @@ export function statusColor(status: string): string {
   switch (status) {
     case "running": return C.cyan;
     case "done": return C.success;
-    case "review": return C.violetSoft;
+    case "review": return C.primarySoft;
     case "rework": return C.warning;
     case "paused":
     case "stopped": return "#F59E0B";
@@ -50,7 +50,7 @@ export function statusColor(status: string): string {
   }
 }
 
-/** Цвет с прозрачностью: alpha("var(--violet)", 0.2). */
+/** Цвет с прозрачностью: alpha("var(--primary)", 0.2). */
 export function alpha(color: string, a: number): string {
   return `color-mix(in srgb, ${color} ${Math.round(a * 100)}%, transparent)`;
 }

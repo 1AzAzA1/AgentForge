@@ -58,11 +58,11 @@ export function Keys() {
       {items.map((k, i) => (
         <Card key={k.id} hoverable stagger={i} padding={18}>
           <div className="row" style={{ gap: 16, alignItems: "flex-start" }}>
-            <IconTile icon={k.local ? "hard-drive" : "key-round"} size={46} color={k.local ? "var(--teal)" : "var(--violet-soft)"} />
+            <IconTile icon={k.local ? "hard-drive" : "key-round"} size={46} color={k.local ? "var(--teal)" : "var(--primary-soft)"} />
             <div className="col grow" style={{ gap: 4 }}>
               <div className="row" style={{ gap: 8 }}>
                 <span className="h3 ellipsis">{k.label}</span>
-                <Badge text={k.providerTitle} tone="violet" />
+                <Badge text={k.providerTitle} tone="primary" />
                 {k.free && <Badge text={t("keys.free")} tone="success" />}
                 {k.local && <Badge text={t("keys.local")} tone="accent" icon="hard-drive" />}
               </div>

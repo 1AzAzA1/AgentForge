@@ -20,7 +20,7 @@ export function Page({ title, subtitle = "", icon = "", actions, fill = false, c
       <header className="page-head">
         {icon && (
           <div className="page-icon">
-            <Icon name={icon} size={20} color="var(--violet-soft)" />
+            <Icon name={icon} size={20} color="var(--primary-soft)" />
           </div>
         )}
         <div className="grow">

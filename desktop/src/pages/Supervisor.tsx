@@ -50,13 +50,14 @@ export function Supervisor() {
             icon={local ? "hard-drive" : "shield-check"}
             size={42}
             from={ctl.configured ? "var(--magenta)" : "var(--surface3)"}
-            to={ctl.configured ? "var(--violet-soft)" : "var(--surface2)"}
+            to={ctl.configured ? "var(--primary-soft)" : "var(--surface2)"}
+            ink={ctl.configured ? undefined : "var(--text-dim)"}
           />
           <div className="grow">
             <div className="semi">{ctl.modelTitle}</div>
             <div className="small dim">{ctl.configured ? t("sup.checklist") : t("sup.configure_hint")}</div>
           </div>
-          <Badge text={local ? t("sup.mode_local") : t("sup.mode_api")} tone={local ? "accent" : "violet"} />
+          <Badge text={local ? t("sup.mode_local") : t("sup.mode_api")} tone={local ? "accent" : "primary"} />
           <Button compact icon="settings" onClick={() => go("settings")}>{t("nav.settings")}</Button>
         </div>
       </Card>
@@ -81,9 +82,9 @@ export function Supervisor() {
             <Card key={s.id} stagger={i}>
               <div className="col" style={{ gap: 10 }}>
                 <div className="row">
-                  <Icon name="scroll-text" size={15} color="var(--violet-soft)" />
+                  <Icon name="scroll-text" size={15} color="var(--primary-soft)" />
                   <span className="semi">{s.when}</span>
-                  <Badge text={s.triggerTitle} tone={s.trigger === "final" ? "success" : "violet"} />
+                  <Badge text={s.triggerTitle} tone={s.trigger === "final" ? "success" : "primary"} />
                   <span className="spacer" />
                   <span className="small mute">{t("sup.delivered", { n: s.recipients })}</span>
                   <IconButton

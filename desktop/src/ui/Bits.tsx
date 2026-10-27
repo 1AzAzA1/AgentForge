@@ -53,7 +53,7 @@ interface SectionTitleProps {
 export function SectionTitle({ text, icon = "", hint = "", children }: SectionTitleProps) {
   return (
     <div className="section-title">
-      {icon && <Icon name={icon} size={16} color="var(--violet-soft)" />}
+      {icon && <Icon name={icon} size={16} color="var(--primary-soft)" />}
       <div className="grow">
         <div className="h3 ellipsis">{text}</div>
         {hint && <div className="small mute">{hint}</div>}
@@ -83,7 +83,7 @@ export function EmptyState({ icon = "sparkles", title = "", text = "", actionTex
       transition={m.ease(420)}
     >
       <div className="empty-orb rich-only">
-        <Icon name={icon} size={26} color="var(--violet-soft)" />
+        <Icon name={icon} size={26} color="var(--primary-soft)" />
       </div>
       {title && <div className="h3">{title}</div>}
       {text && <div className="dim empty-text">{text}</div>}
@@ -97,7 +97,7 @@ export function EmptyState({ icon = "sparkles", title = "", text = "", actionTex
 }
 
 /** Строка-подсказка с иконкой. */
-export function Hint({ icon, children, color = "var(--violet-soft)" }: { icon: string; children: ReactNode; color?: string }) {
+export function Hint({ icon, children, color = "var(--primary-soft)" }: { icon: string; children: ReactNode; color?: string }) {
   return (
     <div className="hint-row">
       <Icon name={icon} size={16} color={color} />
@@ -120,8 +120,10 @@ export function Notice({ tone = "warning", icon, children, action }: { tone?: st
 }
 
 /** Круглый аватар с градиентом и иконкой или буквой. */
-export function Avatar({ icon, letter, size = 40, from = "var(--violet)", to = "var(--cyan)", round = true }: {
+export function Avatar({ icon, letter, size = 40, from = "var(--primary)", to = "var(--cyan)", round = true, ink = "var(--on-primary)" }: {
   icon?: string; letter?: string; size?: number; from?: string; to?: string; round?: boolean;
+  /** цвет иконки или буквы; на тёмной подложке нужен светлый */
+  ink?: string;
 }) {
   return (
     <div
@@ -131,13 +133,13 @@ export function Avatar({ icon, letter, size = 40, from = "var(--violet)", to = "
         background: `linear-gradient(135deg, ${from}, ${to})`,
       }}
     >
-      {icon ? <Icon name={icon} size={Math.round(size * 0.44)} color="white" /> : <span className="bold">{letter}</span>}
+      {icon ? <Icon name={icon} size={Math.round(size * 0.44)} color={ink} /> : <span className="bold" style={{ color: ink }}>{letter}</span>}
     </div>
   );
 }
 
 /** Квадратная плашка с иконкой в цвет тона. */
-export function IconTile({ icon, color = "var(--violet-soft)", size = 38, bg }: { icon: string; color?: string; size?: number; bg?: string }) {
+export function IconTile({ icon, color = "var(--primary-soft)", size = 38, bg }: { icon: string; color?: string; size?: number; bg?: string }) {
   return (
     <div className="icon-tile" style={{ width: size, height: size, background: bg ?? alpha(color, 0.14), color }}>
       <Icon name={icon} size={Math.round(size * 0.45)} />

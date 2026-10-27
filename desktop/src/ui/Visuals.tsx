@@ -11,7 +11,7 @@ import { statusColor, useMotionPrefs } from "./theme";
 export function Aurora({ intensity = 1 }: { intensity?: number }) {
   return (
     <div className="aurora" style={{ opacity: intensity }} aria-hidden>
-      <span className="aurora-glow rich-only" style={{ ["--c" as string]: "var(--violet)", ["--a" as string]: "0.34", width: 1040, height: 1040, left: "18%", top: "10%", animationDuration: "26s" }} />
+      <span className="aurora-glow rich-only" style={{ ["--c" as string]: "var(--primary)", ["--a" as string]: "0.34", width: 1040, height: 1040, left: "18%", top: "10%", animationDuration: "26s" }} />
       <span className="aurora-glow rich-only" style={{ ["--c" as string]: "var(--teal)", ["--a" as string]: "0.2", width: 920, height: 920, left: "92%", top: "22%", animationDuration: "30s", animationDirection: "reverse" }} />
       <span className="aurora-glow rich-only" style={{ ["--c" as string]: "var(--cyan)", ["--a" as string]: "0.14", width: 840, height: 840, left: "70%", top: "98%", animationDuration: "34s" }} />
       <span className="aurora-glow rich-only" style={{ ["--c" as string]: "var(--magenta)", ["--a" as string]: "0.12", width: 760, height: 760, left: "5%", top: "95%", animationDuration: "38s", animationDirection: "reverse" }} />
@@ -33,13 +33,13 @@ export function OrbitLogo({ size = 40, speed = 1 }: { size?: number; speed?: num
     <svg className="orbit-logo" width={size} height={size} viewBox="0 0 100 100" aria-hidden>
       <defs>
         <linearGradient id="orbit-core" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="var(--violet-soft)" />
-          <stop offset="1" stopColor="var(--indigo)" />
+          <stop offset="0" stopColor="var(--primary-soft)" />
+          <stop offset="1" stopColor="var(--primary-deep)" />
         </linearGradient>
       </defs>
-      <circle cx="50" cy="50" r={r1} fill="none" stroke="var(--violet-soft)" strokeOpacity="0.28" strokeWidth="2" strokeDasharray="2 3" />
+      <circle cx="50" cy="50" r={r1} fill="none" stroke="var(--primary-soft)" strokeOpacity="0.28" strokeWidth="2" strokeDasharray="2 3" />
       <circle cx="50" cy="50" r={r2} fill="none" stroke="var(--cyan)" strokeOpacity="0.22" strokeWidth="2" />
-      <circle cx="50" cy="50" r="28.5" fill="none" stroke="var(--violet)" strokeOpacity="0.25" strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="28.5" fill="none" stroke="var(--primary)" strokeOpacity="0.25" strokeWidth="2.5" />
       <circle cx="50" cy="50" r="15" fill="url(#orbit-core)" />
       {sat(r1, 20, "var(--teal)", 12, 7000)}
       {sat(r2, 150, "var(--cyan)", 10, 11000)}
@@ -54,7 +54,7 @@ function mix(a: number[], b: number[], t: number) {
 }
 
 /** Кольцевой индикатор: дуга дорастает до значения, цвет по пути переходит
- *  от фиолетового к сине-зелёному. */
+ *  от основного зелёного к сине-зелёному. */
 export function ProgressRing({ value, size = 64, thickness = 6, label = "" }: { value: number; size?: number; thickness?: number; label?: string }) {
   const m = useMotionPrefs();
   const r = (size - thickness) / 2;
@@ -73,7 +73,7 @@ export function ProgressRing({ value, size = 64, thickness = 6, label = "" }: { 
           strokeLinecap="round"
           strokeDasharray={c}
           initial={false}
-          animate={{ strokeDashoffset: c * (1 - v), stroke: v > 0.002 ? mix([139, 92, 246], [45, 212, 191], v) : "rgb(0 0 0 / 0)" }}
+          animate={{ strokeDashoffset: c * (1 - v), stroke: v > 0.002 ? mix([0, 250, 154], [45, 212, 191], v) : "rgb(0 0 0 / 0)" }}
           transition={m.ease(840)}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
@@ -246,7 +246,7 @@ export function BarList({ bars, emptyText }: { bars: Bar[]; emptyText: string })
       {bars.map((b, i) => (
         <div key={`${b.label}-${i}`} className="col" style={{ gap: 5 }}>
           <div className="row small">
-            <Icon name={b.supervisor ? "shield-check" : "bot"} size={13} color={b.supervisor ? "var(--violet-soft)" : "var(--text-mute)"} />
+            <Icon name={b.supervisor ? "shield-check" : "bot"} size={13} color={b.supervisor ? "var(--primary-soft)" : "var(--text-mute)"} />
             <span className="grow ellipsis">{b.label}</span>
             <span className="mono dim">{b.text}</span>
             <span className="mono mute">{b.cost}</span>
@@ -256,8 +256,8 @@ export function BarList({ bars, emptyText }: { bars: Bar[]; emptyText: string })
               className="track-fill"
               style={{
                 background: b.supervisor
-                  ? "linear-gradient(90deg, var(--magenta), var(--violet-soft))"
-                  : "linear-gradient(90deg, var(--violet), var(--cyan))",
+                  ? "linear-gradient(90deg, var(--magenta), var(--primary-soft))"
+                  : "linear-gradient(90deg, var(--primary), var(--cyan))",
               }}
               initial={{ width: 0 }}
               animate={{ width: `${(b.value / max) * 100}%` }}

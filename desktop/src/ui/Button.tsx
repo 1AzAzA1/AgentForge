@@ -120,7 +120,7 @@ export function Button({
                 exit={{ opacity: 0, scale: 0.3 }}
                 transition={m.spring}
               >
-                <Spinner size={box - 2} color={primary ? "white" : "var(--violet-soft)"} />
+                <Spinner size={box - 2} color={primary ? "var(--on-primary)" : "var(--primary-soft)"} />
               </motion.span>
             ) : icon ? (
               <motion.span

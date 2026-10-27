@@ -96,7 +96,7 @@ export function Login() {
             {features.map((f, i) => (
               <motion.div key={f.icon} className="row" style={{ gap: 12 }} {...enter(0.15 + i * 0.08)}>
                 <div className="login-feature-icon">
-                  <Icon name={f.icon} size={16} color="var(--violet-soft)" />
+                  <Icon name={f.icon} size={16} color="var(--primary-soft)" />
                 </div>
                 <span className="dim">{f.text}</span>
               </motion.div>

@@ -21,7 +21,7 @@ interface CardProps {
 
 export function Card({
   children, className = "", style, padding, hoverable = false, glow = false,
-  glowColor = "var(--violet)", stagger = -1, dimmed = false, onClick,
+  glowColor = "var(--primary)", stagger = -1, dimmed = false, onClick,
 }: CardProps) {
   const m = useMotionPrefs();
   const enter = stagger >= 0 && m.on;

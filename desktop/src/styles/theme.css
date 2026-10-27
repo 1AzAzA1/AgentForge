@@ -1,6 +1,7 @@
 /* Дизайн-система: палитра, типографика, отступы, радиусы.
-   Основа - глубокий чернильно-фиолетовый фон; акцент - фиолетовый, второй
-   акцент - сине-зелёный (teal -> cyan). Тема одна, тёмная. */
+   Основа - глубокий чернильный фон; основной цвет - весенний зелёный
+   #00FA9A, второй акцент - сине-зелёный (teal -> cyan). Тема одна, тёмная.
+   Основной цвет яркий, поэтому текст и иконки на нём тёмные (--on-primary). */
 
 @font-face { font-family: "Inter"; src: url("../assets/fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
 @font-face { font-family: "Inter"; src: url("../assets/fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; font-display: block; }
@@ -32,9 +33,10 @@
   --text-mute: #6e6891;
   --text-faint: #4b4668;
 
-  --violet: #8b5cf6;
-  --violet-soft: #a78bfa;
-  --violet-deep: #6d28d9;
+  --primary: #00fa9a;
+  --primary-soft: #6dfcc4;
+  --primary-deep: #00b36e;
+  --on-primary: #03140d;
   --indigo: #6366f1;
   --teal: #2dd4bf;
   --cyan: #22d3ee;
@@ -115,7 +117,7 @@ textarea,
 a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-::selection { background: color-mix(in srgb, var(--violet) 45%, transparent); }
+::selection { background: color-mix(in srgb, var(--primary) 45%, transparent); }
 
 /* Полосы прокрутки в цвет темы. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -129,7 +131,7 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-thumb:hover { background-color: var(--text-faint); }
 ::-webkit-scrollbar-corner { background: transparent; }
 
-:focus-visible { outline: 2px solid color-mix(in srgb, var(--violet-soft) 70%, transparent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--primary-soft) 70%, transparent); outline-offset: 2px; }
 
 .mono { font-family: var(--mono); }
 .dim { color: var(--text-dim); }

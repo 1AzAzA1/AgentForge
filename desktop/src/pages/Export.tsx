@@ -43,7 +43,7 @@ export function Export() {
         <>
           <Card padding={16}>
             <div className="row" style={{ gap: 12 }}>
-              <Icon name={ctl.nothing ? "inbox" : "wand-sparkles"} size={18} color={ctl.nothing ? "var(--text-mute)" : "var(--violet-soft)"} />
+              <Icon name={ctl.nothing ? "inbox" : "wand-sparkles"} size={18} color={ctl.nothing ? "var(--text-mute)" : "var(--primary-soft)"} />
               <div className="grow">
                 <div className="wrap">{ctl.nothing ? t("exp.nothing") : t("exp.auto_hint", { reason: ctl.reason })}</div>
                 <div className="small mute">{ctl.stats}</div>
@@ -58,7 +58,7 @@ export function Export() {
               return (
                 <Card key={f.key} hoverable glow={chosen} stagger={i} onClick={() => call("exporter", "setFormat", f.key)} className="format-card">
                   <div className="row">
-                    <div className="icon-tile" style={{ width: 40, height: 40, background: chosen ? alpha("var(--violet)", 0.3) : "var(--surface3)", color: chosen ? "white" : "var(--text-dim)" }}>
+                    <div className="icon-tile" style={{ width: 40, height: 40, background: chosen ? alpha("var(--primary)", 0.3) : "var(--surface3)", color: chosen ? "white" : "var(--text-dim)" }}>
                       <Icon name={f.icon} size={18} />
                     </div>
                     <span className="spacer" />

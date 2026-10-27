@@ -208,7 +208,7 @@ export function Task() {
                             <Badge text={s.statusTitle} tint={color} />
                           </div>
                           <div className="wrap-row" style={{ gap: 6 }}>
-                            <Badge text={s.agentName} icon={s.agentId >= 0 ? "bot" : "circle-alert"} tone={s.agentId >= 0 ? "violet" : "warning"} />
+                            <Badge text={s.agentName} icon={s.agentId >= 0 ? "bot" : "circle-alert"} tone={s.agentId >= 0 ? "primary" : "warning"} />
                             {(s.depTitles as string[]).map((d) => <Badge key={d} text={d} icon="git-branch" tone="muted" />)}
                             {s.reworks > 0 && <Badge text={t("task.reworks", { n: s.reworks })} tone="warning" icon="rotate-ccw" />}
                             {s.tokens !== "0" && <Badge text={`${s.tokens} · ${s.cost}`} tone="muted" icon="coins" />}

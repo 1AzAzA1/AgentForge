@@ -66,14 +66,15 @@ export function Workspaces() {
                 <Avatar
                   letter={String(ws.name || "?")[0].toUpperCase()}
                   round={false}
-                  from={ws.active ? "var(--violet)" : "var(--surface3)"}
+                  from={ws.active ? "var(--primary)" : "var(--surface3)"}
                   to={ws.active ? "var(--teal)" : "var(--surface2)"}
+                  ink={ws.active ? undefined : "var(--text-dim)"}
                 />
                 <div className="grow">
                   <div className="h3 ellipsis">{ws.name}</div>
                   <div className="small mute">{t("ws.updated", { when: ws.updated })}</div>
                 </div>
-                {ws.active && <Badge text={t("ws.active")} tone="violet" icon="check" />}
+                {ws.active && <Badge text={t("ws.active")} tone="primary" icon="check" />}
               </div>
               <div className={`clamp2 ws-desc ${ws.description ? "dim" : "mute"}`}>
                 {ws.description || t("ws.no_description")}

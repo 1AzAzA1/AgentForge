@@ -53,7 +53,7 @@ function BudgetCard({ b, index }: { b: any; index: number }) {
   const save = async (tok: string, usd: string, threshold: number) => {
     setError(await call<string>("budget", "save", b.scope, b.scopeId, tok, usd, threshold));
   };
-  const color = b.ratio >= 1 ? "var(--danger)" : b.ratio >= b.threshold ? "var(--warning)" : "var(--violet)";
+  const color = b.ratio >= 1 ? "var(--danger)" : b.ratio >= b.threshold ? "var(--warning)" : "var(--primary)";
 
   return (
     <Card stagger={index} hoverable glow={b.exceeded} glowColor="var(--danger)">

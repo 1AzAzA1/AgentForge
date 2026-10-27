@@ -56,7 +56,7 @@ export function Run() {
         <div className="row" style={{ gap: 22 }}>
           <ProgressRing value={ctl.progress ?? 0} label={ctl.total > 0 ? `${Math.round((ctl.progress ?? 0) * 100)}%` : "-"} />
           <Kpi caption={t("run.k_done")} value={`${ctl.done ?? 0} / ${ctl.total ?? 0}`} color="var(--success)" />
-          <Kpi caption={t("run.k_review")} value={ctl.review ?? 0} color={ctl.review ? "var(--violet-soft)" : undefined} />
+          <Kpi caption={t("run.k_review")} value={ctl.review ?? 0} color={ctl.review ? "var(--primary-soft)" : undefined} />
           <Kpi caption={t("run.k_errors")} value={ctl.errors ?? 0} color={ctl.errors ? "var(--danger)" : undefined} />
           <Kpi caption={t("run.k_time")} value={backend.runElapsed || "-"} />
           <Kpi caption={t("run.k_tokens")} value={backend.running ? backend.runTokens : "-"} />
@@ -160,7 +160,7 @@ function Approval({ item }: { item: any }) {
   );
 }
 
-const PHASE_TONES: Record<string, string> = { tool: "accent", done: "success", error: "error", idle: "muted", thinking: "violet", review: "violet" };
+const PHASE_TONES: Record<string, string> = { tool: "accent", done: "success", error: "error", idle: "muted", thinking: "primary", review: "primary" };
 
 function StreamCard({ s }: { s: any }) {
   const t = useT();
@@ -188,7 +188,7 @@ function StreamCard({ s }: { s: any }) {
     <Card padding={14} glow={s.live} glowColor={glow} className="stream-card">
       <div className="row" style={{ gap: 10 }}>
         <div className="avatar-wrap">
-          <Avatar icon={s.icon} size={36} from={s.isSupervisor ? "var(--magenta)" : "var(--violet)"} to={s.isSupervisor ? "var(--violet-soft)" : "var(--cyan)"} />
+          <Avatar icon={s.icon} size={36} from={s.isSupervisor ? "var(--magenta)" : "var(--primary)"} to={s.isSupervisor ? "var(--primary-soft)" : "var(--cyan)"} />
           {s.live && <span className="avatar-ring rich-only" style={{ borderColor: alpha(glow, 0.5) }} />}
         </div>
         <div className="grow">
@@ -198,7 +198,7 @@ function StreamCard({ s }: { s: any }) {
           </div>
           <div className={`small ellipsis ${s.subtask ? "dim" : "mute"}`}>{s.subtask || t("run.waiting")}</div>
         </div>
-        <Badge text={phaseTitle} tone={PHASE_TONES[s.phase] ?? "violet"} icon={s.phase === "tool" ? "zap" : s.phase === "done" ? "check" : ""} />
+        <Badge text={phaseTitle} tone={PHASE_TONES[s.phase] ?? "primary"} icon={s.phase === "tool" ? "zap" : s.phase === "done" ? "check" : ""} />
         <IconButton icon="copy" doneIcon="check" size={28} tip={t("run.copy_stream")} onClick={copy} />
       </div>
 
@@ -208,7 +208,7 @@ function StreamCard({ s }: { s: any }) {
             <span
               key={i}
               className="step-dot"
-              style={{ background: i < step ? (i === step - 1 && s.live ? "var(--cyan)" : "var(--violet)") : "var(--surface3)" }}
+              style={{ background: i < step ? (i === step - 1 && s.live ? "var(--cyan)" : "var(--primary)") : "var(--surface3)" }}
             />
           ))}
           {step > 0 && <span className="micro mute" style={{ marginLeft: 6 }}>{t("run.step_of", { n: step, m: steps })}</span>}
