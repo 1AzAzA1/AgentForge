@@ -1,4 +1,4 @@
-"""Строки интерфейса версии 1.1 (Qt Quick).
+"""Строки интерфейса.
 
 Вынесены отдельно от ``i18n.py``, чтобы словари не разрастались в один
 нечитаемый файл. При импорте ``app.i18n`` они вливаются в общие каталоги.
@@ -9,6 +9,11 @@ from __future__ import annotations
 RU_UI: dict[str, str] = {
     # общее
     "common.copy": "Копировать",
+    "app.reconnecting": "Нет связи с ядром, переподключаюсь...",
+    "app.core_exited": "Ядро завершилось (код {code})",
+    "app.core_exited_text": "Подробности в журнале приложения. Перезапустите программу.",
+    "app.core_restarting": "Перезапускаю ядро, данные сохранены. Войдите в профиль снова.",
+    "app.core_failed": "Ядро не запускается. Подробности в журнале приложения.",
     # статусы (дополнение)
     "status.stopped": "Остановлено",
     "status.failed": "С ошибками",
@@ -21,6 +26,7 @@ RU_UI: dict[str, str] = {
     "login.have_profile": "У меня уже есть профиль",
     "login.local": "данные хранятся локально",
     "login.need_username": "Введите имя профиля",
+    "login.saved_password": "Сохранённый пароль",
     "login.s0": "", "login.s1": "слабый", "login.s2": "средний", "login.s3": "хороший",
     "login.s4": "надёжный",
     # навигация
@@ -295,6 +301,11 @@ RU_UI: dict[str, str] = {
 
 EN_UI: dict[str, str] = {
     "common.copy": "Copy",
+    "app.reconnecting": "Lost connection to the core, reconnecting...",
+    "app.core_exited": "The core has stopped (code {code})",
+    "app.core_exited_text": "See the application log for details. Restart the app.",
+    "app.core_restarting": "Restarting the core, your data is saved. Sign in again.",
+    "app.core_failed": "The core does not start. See the application log for details.",
     "status.stopped": "Stopped",
     "status.failed": "Failed",
     "status.draft": "Draft",
@@ -305,6 +316,7 @@ EN_UI: dict[str, str] = {
     "login.have_profile": "I already have a profile",
     "login.local": "data is stored locally",
     "login.need_username": "Enter a profile name",
+    "login.saved_password": "Saved password",
     "login.s0": "", "login.s1": "weak", "login.s2": "fair", "login.s3": "good", "login.s4": "strong",
     "nav.g_project": "Project",
     "nav.g_work": "Work",
