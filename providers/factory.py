@@ -18,30 +18,36 @@ _PRICING_FILE = Path(__file__).with_name("pricing.json")
 
 
 def build_provider(provider_key: str, api_key: str = "",
-                   base_url: str = "", timeout: float = 120.0) -> LLMProvider:
+                   base_url: str = "", timeout: float = 120.0,
+                   retries: bool = True) -> LLMProvider:
     """Создаёт экземпляр провайдера по ключу пресета.
 
     Импорт реализаций ленивый: расчёт стоимости и работа с пресетами не должны
     тянуть за собой httpx, если сетевой вызов в этом сценарии не нужен.
+    По умолчанию провайдер обёрнут повторами при временных сбоях (429, 503,
+    обрыв сети), см. ``providers/retry.py``.
     """
     from providers.anthropic_provider import AnthropicProvider
     from providers.gemini_provider import GeminiProvider
     from providers.openai_compat import OpenAICompatProvider
+    from providers.retry import RetryingProvider
 
     p = preset(provider_key)
     url = base_url or p.base_url
+    prov: LLMProvider
     if p.api_style == "anthropic":
-        return AnthropicProvider(api_key, url, timeout)
-    if p.api_style == "gemini":
-        return GeminiProvider(api_key, url, timeout)
-    extra: dict[str, str] = {}
-    if provider_key == "openrouter":
-        # OpenRouter просит идентифицировать приложение.
-        extra = {"HTTP-Referer": "https://localhost/agent-forge",
-                 "X-Title": "Agent Forge"}
-    prov = OpenAICompatProvider(api_key, url, timeout, extra_headers=extra)
-    prov.key = provider_key
-    return prov
+        prov = AnthropicProvider(api_key, url, timeout)
+    elif p.api_style == "gemini":
+        prov = GeminiProvider(api_key, url, timeout)
+    else:
+        extra: dict[str, str] = {}
+        if provider_key == "openrouter":
+            # OpenRouter просит идентифицировать приложение.
+            extra = {"HTTP-Referer": "https://localhost/agent-forge",
+                     "X-Title": "Agent Forge"}
+        prov = OpenAICompatProvider(api_key, url, timeout, extra_headers=extra)
+        prov.key = provider_key
+    return RetryingProvider(prov) if retries else prov
 
 
 @lru_cache(maxsize=1)
