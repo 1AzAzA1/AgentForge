@@ -16,9 +16,14 @@ from typing import Any
 from core.tools.base import Tool, ToolContext, ToolError
 
 MAX_RESULTS = 8
+# сколько секунд ждать ответа поисковика
+SEARCH_TIMEOUT = 40
 MAX_PAGE_CHARS = 20_000
 # сколько байт страницы скачивать не больше
 MAX_DOWNLOAD_BYTES = 5_000_000
+# Википедия и часть сайтов отвечают 403 клиентам без контактного адреса
+# в User-Agent (https://w.wiki/4wJS), поэтому он указан явно.
+USER_AGENT = "Mozilla/5.0 (compatible; AgentForge/1.2; +https://github.com/AgentForgeTeam/AgentForge)"
 
 
 class WebSearchTool(Tool):
@@ -49,11 +54,17 @@ class WebSearchTool(Tool):
 
         backend = ctx.search_backend
         if backend == "tavily" and ctx.search_api_key:
-            items = await _tavily(query, n, ctx.search_api_key)
+            search = _tavily(query, n, ctx.search_api_key)
         elif backend == "brave" and ctx.search_api_key:
-            items = await _brave(query, n, ctx.search_api_key)
+            search = _brave(query, n, ctx.search_api_key)
         else:
-            items = await asyncio.to_thread(_duckduckgo, query, n)
+            search = asyncio.to_thread(_duckduckgo, query, n)
+        # Поисковики бывает зависают; агент не должен ждать до конца лимита задачи.
+        try:
+            items = await asyncio.wait_for(search, SEARCH_TIMEOUT)
+        except asyncio.TimeoutError:
+            raise ToolError(f"Поиск не ответил за {SEARCH_TIMEOUT} с. Попробуй другой "
+                            "запрос или открой известную страницу через fetch_url.") from None
 
         if not items:
             return f"По запросу «{query}» ничего не найдено."
@@ -86,7 +97,7 @@ class WebFetchTool(Tool):
         try:
             async with httpx.AsyncClient(
                 timeout=30, follow_redirects=True,
-                headers={"User-Agent": "Mozilla/5.0 (compatible; AgentForge/1.1)"},
+                headers={"User-Agent": USER_AGENT},
             ) as client:
                 async with client.stream("GET", url) as resp:
                     if resp.status_code >= 400:
